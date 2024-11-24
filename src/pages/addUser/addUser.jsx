@@ -790,20 +790,28 @@ class AddUser extends Component {
             >
               <Row className="bg-black flex_center me-3 mt-3">
                 <Col span={23} className="bg-grey register_box">
-                  <Row className="d-flex justify-content-evenly">
+                <Form 
+                   ref={this.formRef}
+                   name="validateOnly"
+                   layout="vertical"
+                   autoComplete="off"
+                   className="fw-bold add-user"
+                   onFinish={(values) => this.show(values)}
+                   initialValues={{
+                     FirstName: "",
+                     Email: "",
+                     Role: "",
+                     LastName: "",
+                          Gender: "",
+                          File: "",
+                          Address: "",
+                          Country: "",
+                          State: "",
+                          City: "",
+                   }}>
+                  <Row className="d-flex justify-content-evenly">           
                     <Col span={9} className="bg-grey">
-                      <Form
-                        ref={this.formRef}
-                        name="validateOnly"
-                        layout="vertical"
-                        autoComplete="off"
-                        className="fw-bold add-user"
-                        onFinish={(values) => this.show(values)}
-                        initialValues={{
-                          FirstName: "",
-                          Email: "",
-                          Role: "",
-                        }}
+                      <div                      
                       >
                         <Form.Item
                           name="FirstName"
@@ -855,21 +863,11 @@ class AddUser extends Component {
                             <Option value="FullStack">Full Stack</Option>
                           </Select>
                         </Form.Item>
-                      </Form>
+                      </div>
                     </Col>
                     <Col span={9} className="bg-grey">
-                      <Form
-                        ref={this.formRef}
-                        name="validateOnly"
-                        layout="vertical"
-                        autoComplete="off"
-                        className="fw-bold add-user"
-                        onFinish={(values) => this.show(values)}
-                        initialValues={{
-                          LastName: "",
-                          Gender: "",
-                          File: "",
-                        }}
+                      <div
+                       
                       >
                         <Form.Item
                           name="LastName"
@@ -928,22 +926,10 @@ class AddUser extends Component {
                             </Button>
                           </Col>
                         </Row>
-                      </Form>
+                      </div>
                     </Col>
                     <Col span={20} className="bg-grey">
-                      <Form
-                        ref={this.formRef}
-                        name="validateOnly"
-                        layout="vertical"
-                        autoComplete="off"
-                        className="fw-bold add-user"
-                        onFinish={(values) => this.show(values)}
-                        initialValues={{
-                          Address: "",
-                          Country: "",
-                          State: "",
-                          City: "",
-                        }}
+                      <div
                       >
                         <Form.Item
                           name="Address"
@@ -965,7 +951,6 @@ class AddUser extends Component {
                             }}
                           />
                         </Form.Item>
-
                         <Row>
                           <Col span={8}>
                             <Country />
@@ -977,7 +962,7 @@ class AddUser extends Component {
                             <City />
                           </Col>
                         </Row>
-                      </Form>
+                      </div>
                     </Col>
                     <Col span={20} className="bg-grey add-user-button">
                       <Row>&nbsp;</Row>
@@ -985,28 +970,25 @@ class AddUser extends Component {
                         <Col span={8}></Col>
                         <Col span={8}></Col>
                         <Col span={8}>
-                          <Form
-                            ref={this.formRef}
-                            name="validateOnly"
-                            layout="vertical"
-                            autoComplete="off"
-                            className="fw-bold add-user"
-                            onFinish={(values) => this.show(values)}
+                          <div
                           >
                             <Form.Item>
                               <Button
                                 size="large"
                                 className="bg-black text-light fw-bold"
+                                htmlType="submit"
                                 onClick={this.setFormValues}
                               >
                                 Submit <FaPaperPlane />
                               </Button>
                             </Form.Item>
-                          </Form>
+                          </div>
                         </Col>
                       </Row>
                     </Col>
+                    
                   </Row>
+                  </Form>
                 </Col>
               </Row>
             </Content>

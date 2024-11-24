@@ -416,3 +416,7 @@ a{
   overflow: hidden;
   text-overflow: ellipsis; 
 }
+
+.form_style{
+  display: inline !important;
+}
