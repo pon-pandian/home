@@ -1,0 +1,47 @@
+{
+  "total": 6,
+  "results": [
+    {
+      "id": 1,
+      "name": "Pon Pandian",
+      "email": "ponpandian@gmail.com",
+      "gender": "Male",
+      "role": "full stack developer"
+    },
+    {
+      "id": 2,
+      "name": "Pon Pandian",
+      "email": "ponpandian@gmail.com",
+      "gender": "Male",
+      "role": "full stack developer"
+    },
+    {
+      "id": 3,
+      "name": "Lazy boy",
+      "email": "ponpandian@gmail.com",
+      "gender": "Male",
+      "role": "full stack developer"
+    },
+    {
+      "id": 4,
+      "name": "Pon Pandian",
+      "email": "ponpandian@gmail.com",
+      "gender": "Male",
+      "role": "full stack developer"
+    },
+    {
+      "id": 5,
+      "name": "Pon Pandian",
+      "email": "ponpandian@gmail.com",
+      "gender": "Male",
+      "role": "full stack developer"
+    },
+    {
+      "id": 6,
+      "name": "Pon Pandian",
+      "email": "ponpandian@gmail.com",
+      "gender": "Male",
+      "role": "full stack developer"
+    }
+  ]
+}
