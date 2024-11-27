@@ -1,0 +1,12 @@
+{
+  "total": 1,
+  "results": [
+    {
+      "name": "mouli",
+      "email": "ponpandian@gmail.com",
+      "gender": "Male",
+      "role": "full stack developer",
+      "id": 1
+    }
+  ]
+}
