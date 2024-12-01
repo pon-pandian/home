@@ -1,0 +1,41 @@
+*{
+  font-family:Copperplate, Papyrus, fantasy;
+}
+.bg_light_blue{
+  background-color:#8FBDE8 !important;
+}
+.login_outer_box{
+  padding-top:18vh;
+  padding-bottom:18vh;
+}
+.login_inner_box{
+  border-radius:25px !important;
+  height:85vh;
+  width:120vh;
+}
+.home_inner_box{
+  border-radius:25px !important;
+  height:85vh;
+  width:200vh;
+
+}
+.layout_box{
+  width:100%;
+  height:78%;
+  border-radius:25px;
+ 
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}
+.navbar-toggler{
+  background-color: lightgrey !important;
+}
+.nav_hover > span :hover{
+  color:orange !important;
+  }
+  .nav_shadow{
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px !important;
+    border-radius:15px;
+  }
+  .login_shadow{
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  }
