@@ -1,54 +1,112 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const multer = require('multer');
-const cors = require('cors');
-const path = require('path');
+const express = require("express");
+const mongoose = require("mongoose");
+const multer = require("multer");
+const nodemailer = require("nodemailer");
+const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
+require("dotenv").config();
 
 const app = express();
-app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(cors());
 
-mongoose.connect('mongodb://localhost:27017/local', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-    .then(() => console.log('MongoDB connected'))
-    .catch((err) => console.error('MongoDB connection error:', err));
-
-const ImageSchema = new mongoose.Schema({
-    filename: String,
-    path: String,
+mongoose.connect("mongodb://localhost:27017/filedb", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
-const Image = mongoose.model('Image', ImageSchema);
+
+const FileSchema = new mongoose.Schema({
+  name: String,
+  path: String,
+});
+const File = mongoose.model("File", FileSchema);
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
-    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
 const upload = multer({ storage });
 
-app.post('/upload', upload.single('image'), async (req, res) => {
-    try {
-        const newImage = new Image({
-            filename: req.file.filename,
-            path: `/uploads/${req.file.filename}`,
-        });
-        await newImage.save();
-        res.status(201).json(newImage);
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to upload image' });
-    }
+app.get("/files", async (req, res) => {
+  const files = await File.find();
+  res.json(files);
 });
 
-app.get('/images', async (req, res) => {
-    try {
-        const images = await Image.find();
-        res.json(images);
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch images' });
-    }
+app.post("/upload", upload.array("files"), async (req, res) => {
+  const files = req.files.map((file) => ({
+    name: file.originalname,
+    path: file.path,
+  }));
+
+  await File.insertMany(files);
+  res.status(200).json(await File.find());
 });
 
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.get("/download/:id", async (req, res) => {
+  const file = await File.findById(req.params.id);
+  if (file) {
+    const fullPath = path.resolve(file.path);
+    if (fs.existsSync(fullPath)) {
+      res.download(fullPath, file.name);
+    } else {
+      res.status(404).json({ error: "File not found on server" });
+    }
+  } else {
+    res.status(404).json({ error: "File not found in database" });
+  }
+});
+
+app.delete("/file/:id", async (req, res) => {
+  try {
+    const file = await File.findById(req.params.id);
+    if (!file) {
+      return res.status(404).json({ error: "File not found in database" });
+    }
+
+    const fullPath = path.resolve(file.path);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    } else {
+      console.warn(`File not found on server: ${fullPath}`);
+    }
+
+    await File.findByIdAndDelete(req.params.id);
+    res.sendStatus(200);
+  } catch (err) {
+    console.error("Error deleting file:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/share", async (req, res) => {
+  const { email, fileId } = req.body;
+  const file = await File.findById(fileId);
+
+  if (file) {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Shared File",
+      text: "Please find the attached file.",
+      attachments: [{ path: file.path }],
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) return res.status(500).json({ error });
+      res.status(200).json({ message: "Email sent", info });
+    });
+  } else {
+    res.status(404).json({ error: "File not found" });
+  }
+});
+
+app.listen(5000, () => console.log("Server running on http://localhost:5000"));
