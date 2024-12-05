@@ -44,7 +44,9 @@ const Gallery = () => {
             </Carousel.Item>
           ))
         ) : (
-          <p>No images available.</p>
+          <div className="d-flex justify-content-center">
+            <h4 >No images available.</h4>
+          </div>
         )}
       </Carousel>
       </div>

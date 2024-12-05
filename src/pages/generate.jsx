@@ -4,13 +4,22 @@ import jsPDF from "jspdf";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import axios from "axios";
+import { Toast } from "react-bootstrap";
 
 const Generate = () => {
+   
+  const nameRegex =  /^[A-Za-z ]*$/
+  const emailRegex = /\w+[@][\w]+\.com/
+  const phoneRegex = /^[0-9]{10}$/
+  const [showToast, setShowToast] = useState(false);
+const [toastMessage, setToastMessage] = useState("");
+const [toastType, setToastType] = useState("danger");
   const [location, setLocation] = useState("");
   const [currentDate, setCurrentDate] = useState("");
   const [generateDate, setGenerateDate] = useState("");
   const [isSameDate, setIsSameDate] = useState(false);
   const [formData, setFormData] = useState({
+    event: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -53,11 +62,12 @@ const Generate = () => {
     pdf.text(`Location: ${location}`, 10, 20);
     pdf.text(`Current Date: ${currentDate}`, 10, 30);
     pdf.text(`Generate Date: ${generateDate}`, 10, 40);
-    pdf.text(`First Name: ${formData.firstName}`, 10, 50);
-    pdf.text(`Last Name: ${formData.lastName}`, 10, 60);
-    pdf.text(`Email: ${formData.email}`, 10, 70);
-    pdf.text(`Address: ${formData.address}`, 10, 80);
-    pdf.text(`Phone Number: ${formData.phoneNumber}`, 10, 90);
+    pdf.text(`Event: ${formData.event}`, 10, 50);
+    pdf.text(`First Name: ${formData.firstName}`, 10, 60);
+    pdf.text(`Last Name: ${formData.lastName}`, 10, 70);
+    pdf.text(`Email: ${formData.email}`, 10, 80);
+    pdf.text(`Address: ${formData.address}`, 10, 90);
+    pdf.text(`Phone Number: ${formData.phoneNumber}`, 10, 100);
     return pdf;
   };
 
@@ -67,6 +77,7 @@ const Generate = () => {
         "Location": location,
         "Current Date": currentDate,
         "Generate Date": generateDate,
+        "Event": formData.event,
         "First Name": formData.firstName,
         "Last Name": formData.lastName,
         "Email": formData.email,
@@ -81,9 +92,112 @@ const Generate = () => {
     return new Blob([excelFile], { type: "application/octet-stream" });
   };
 
-  const handleSubmit = async () => {
-    let file, fileName;
+  const validateForm = () => {
+    
+    if (!location) {
+      setToastMessage("Please select the location");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!currentDate) {
+      setToastMessage("Please select the current date");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!generateDate) {
+      setToastMessage("Please select the generate date");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!formData.firstName) {
+      setToastMessage("First Name is Required");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!nameRegex.test(formData.firstName)) {
+      setToastMessage("First Name : Enter alphabets only");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!formData.lastName) {
+      setToastMessage("Last Name is Required");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!nameRegex.test(formData.lastName)) {
+      setToastMessage("Last Name : Enter alphabets only");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!formData.email) {
+      setToastMessage("Email is Required");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!emailRegex.test(formData.email)) {
+      setToastMessage("Enter a valid Email");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!formData.event) {
+      setToastMessage("Event is Required");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!nameRegex.test(formData.event)) {
+      setToastMessage("Event : Enter alphabets only");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!formData.address) {
+      setToastMessage("Address is Required");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!formData.phoneNumber) {
+      setToastMessage("Phone Number is Required");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    else if (!phoneRegex.test(formData.phoneNumber)) {
+      setToastMessage("Enter a valid Phone Number");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+    
+    else if (!fileFormat) {
+      setToastMessage("Please select the file Format");
+      setToastType("secondary");
+      setShowToast(true);
+      return false;
+    }
+  
+    setToastMessage("Form submitted successfully!");
+    setToastType("success");
+    setShowToast(true);
+    return true;
+  };
+  
 
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+  
+    let file, fileName;
+  
     if (fileFormat === "pdf") {
       const pdf = generatePDF();
       file = new Blob([pdf.output("blob")], { type: "application/pdf" });
@@ -94,10 +208,10 @@ const Generate = () => {
       fileName = "FormData.xlsx";
       saveAs(file, fileName);
     }
-
+  
     const formDataToUpload = new FormData();
     formDataToUpload.append("files", new File([file], fileName));
-
+  
     try {
       const response = await axios.post("http://localhost:5000/upload", formDataToUpload);
       console.log("Uploaded Successfully:", response.data);
@@ -119,9 +233,9 @@ const Generate = () => {
             <option value="">Select Location</option>
             <option value="Chennai">Chennai</option>
             <option value="Coimbatore">Coimbatore</option>
-            <option value="Madurai">Madurai</option>
-            <option value="Trichy">Trichy</option>
             <option value="Erode">Erode</option>
+            <option value="Salem">Salem</option>
+            <option value="Madurai">Madurai</option>
           </Form.Control>
         </Form.Group>
         <Form.Group className="col-12 col-md-4">
@@ -179,6 +293,15 @@ const Generate = () => {
           />
         </Form.Group>
         <Form.Group className="col-12 col-md-4">
+  <Form.Label>Event</Form.Label>
+  <Form.Control
+    type="text"
+    name="event"
+    value={formData.event}
+    onChange={handleInputChange}
+  />
+</Form.Group>
+        <Form.Group className="col-12 col-md-4">
           <Form.Label>Address</Form.Label>
           <Form.Control
             type="text"
@@ -204,10 +327,30 @@ const Generate = () => {
             <option value="excel">Excel</option>
           </Form.Control>
         </Form.Group>
+        <div className="col-12 d-flex justify-content-end ">
         <Button variant="primary" className="col-2 ms-3 mt-3" onClick={handleSubmit}>
           Submit
         </Button>
+
+        </div>
+        
       </Form>
+      {showToast && (
+  <Toast
+    style={{
+      position: "fixed",
+      top: "10%",
+      right: "10%",
+      zIndex: "9999",
+    }}
+    bg={toastType}
+    onClose={() => setShowToast(false)}
+
+  >
+    <Toast.Body>{toastMessage}</Toast.Body>
+  </Toast>
+)}
+
     </div>
   );
 };
