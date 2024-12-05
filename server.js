@@ -139,4 +139,24 @@ app.get("/images", async (req, res) => {
   res.json({ files, total });
 });
 
+const FormData = mongoose.model(
+  "FormData",
+  new mongoose.Schema({
+    name: String,
+    location: {
+      lat: Number,
+      lng: Number,
+    },
+  })
+);
+
+app.get("/formdata", async (req, res) => {
+  try {
+    const data = await FormData.find();
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch data" });
+  }
+});
+
 app.listen(5000, () => console.log("Server running on http://localhost:5000"));
