@@ -8,8 +8,11 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const User = require('./models/User');
-
 dotenv.config();
+const stripe = require('stripe')(`process.env.STRIPE_SECRET_KEY`);
+
+
+
 
 const app = express();
 app.use(express.json());
@@ -168,8 +171,24 @@ newOrder.save()
 });
 
 
-
-
+app.post('/create-payment-intent', async (req, res) => {
+    const { amount } = req.body;
+  
+    try {
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount, 
+        currency: 'inr',
+      });
+  
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    } catch (error) {
+      res.status(500).send({
+        error: error.message,
+      });
+    }
+  });
 
 
 

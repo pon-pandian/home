@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Card, message, Input } from 'antd';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import ScrollAnimationPage from '../components/ScrollAnimation';
+import LoadingPage from '../components/LoadingPage';
 
 const Foods = () => {
   const [data, setData] = useState([]);
@@ -27,6 +29,8 @@ const Foods = () => {
 
   return (
     <>
+     <LoadingPage />
+      {/* <ScrollAnimationPage /> */}
       <div className="h1">Order food online in Tamil Nadu</div>
       <Input
         placeholder="Search by restaurant, location, food, or price"

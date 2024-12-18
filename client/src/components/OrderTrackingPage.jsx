@@ -57,7 +57,7 @@ const OrderTrackingPage = () => {
         <p><strong>Tracking Status:</strong> <span style={statusStyle}>{status}</span></p>
         <p><strong>Delivery Location:</strong> {orderDetails.deliveryLocation}</p>
       </Card>
-      <LoadScript googleMapsApiKey="">
+      <LoadScript googleMapsApiKey={process.env.REACT_APP_API_KEY_MAP}>
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={center}
